@@ -12,6 +12,23 @@ export const FinanceCalculator = () => {
     years: ''
   });
 
+  const [currencyCalc, setCurrencyCalc] = useState({
+    amount: '',
+    from: 'USD',
+    to: 'RUB'
+  });
+
+  const currencyRates: Record<string, number> = {
+    USD: 1,
+    EUR: 0.92,
+    RUB: 92.5,
+    GBP: 0.79,
+    CNY: 7.24,
+    JPY: 149.5,
+    KZT: 450.0,
+    BYN: 3.28
+  };
+
   const calculateLoan = () => {
     const p = parseFloat(loanCalc.amount);
     const r = parseFloat(loanCalc.rate) / 100 / 12;
@@ -31,69 +48,150 @@ export const FinanceCalculator = () => {
     return null;
   };
 
+  const convertCurrency = () => {
+    const amount = parseFloat(currencyCalc.amount);
+    if (!amount) return null;
+
+    const amountInUSD = amount / currencyRates[currencyCalc.from];
+    const result = amountInUSD * currencyRates[currencyCalc.to];
+    return result.toFixed(2);
+  };
+
   const loanResult = calculateLoan();
+  const currencyResult = convertCurrency();
 
   return (
-    <Card className="p-6 bg-gradient-to-br from-card/90 to-card/50 backdrop-blur-sm border-primary/20 max-w-4xl mx-auto">
-      <div className="flex items-center gap-2 mb-6">
-        <Icon name="DollarSign" size={28} className="text-secondary" />
-        <h2 className="text-3xl font-bold">Кредитный калькулятор</h2>
-      </div>
+    <div className="space-y-6">
+      <Card className="p-6 bg-gradient-to-br from-card/90 to-card/50 backdrop-blur-sm border-primary/20 max-w-4xl mx-auto">
+        <div className="flex items-center gap-2 mb-6">
+          <Icon name="DollarSign" size={28} className="text-secondary" />
+          <h2 className="text-3xl font-bold">Кредитный калькулятор</h2>
+        </div>
 
-      <div className="grid md:grid-cols-3 gap-6 mb-6">
-        <div>
-          <Label htmlFor="amount">Сумма кредита (₽)</Label>
-          <Input
-            id="amount"
-            type="number"
-            value={loanCalc.amount}
-            onChange={(e) => setLoanCalc({ ...loanCalc, amount: e.target.value })}
-            className="bg-black/20"
-            placeholder="1000000"
-          />
+        <div className="grid md:grid-cols-3 gap-6 mb-6">
+          <div>
+            <Label htmlFor="amount">Сумма кредита (₽)</Label>
+            <Input
+              id="amount"
+              type="number"
+              value={loanCalc.amount}
+              onChange={(e) => setLoanCalc({ ...loanCalc, amount: e.target.value })}
+              className="bg-black/20"
+              placeholder="1000000"
+            />
+          </div>
+          <div>
+            <Label htmlFor="rate">Процентная ставка (%)</Label>
+            <Input
+              id="rate"
+              type="number"
+              step="0.1"
+              value={loanCalc.rate}
+              onChange={(e) => setLoanCalc({ ...loanCalc, rate: e.target.value })}
+              className="bg-black/20"
+              placeholder="12.5"
+            />
+          </div>
+          <div>
+            <Label htmlFor="years">Срок кредита (лет)</Label>
+            <Input
+              id="years"
+              type="number"
+              value={loanCalc.years}
+              onChange={(e) => setLoanCalc({ ...loanCalc, years: e.target.value })}
+              className="bg-black/20"
+              placeholder="10"
+            />
+          </div>
         </div>
-        <div>
-          <Label htmlFor="rate">Процентная ставка (%)</Label>
-          <Input
-            id="rate"
-            type="number"
-            step="0.1"
-            value={loanCalc.rate}
-            onChange={(e) => setLoanCalc({ ...loanCalc, rate: e.target.value })}
-            className="bg-black/20"
-            placeholder="12.5"
-          />
-        </div>
-        <div>
-          <Label htmlFor="years">Срок кредита (лет)</Label>
-          <Input
-            id="years"
-            type="number"
-            value={loanCalc.years}
-            onChange={(e) => setLoanCalc({ ...loanCalc, years: e.target.value })}
-            className="bg-black/20"
-            placeholder="10"
-          />
-        </div>
-      </div>
 
-      {loanResult && (
-        <div className="grid sm:grid-cols-3 gap-4">
-          <div className="p-6 bg-gradient-to-br from-primary/20 to-primary/10 rounded-lg border border-primary/30">
-            <p className="text-sm text-muted-foreground mb-2">Ежемесячный платеж</p>
-            <p className="text-3xl font-bold text-primary">{loanResult.monthly} ₽</p>
+        {loanResult && (
+          <div className="grid sm:grid-cols-3 gap-4">
+            <div className="p-6 bg-gradient-to-br from-primary/20 to-primary/10 rounded-lg border border-primary/30">
+              <p className="text-sm text-muted-foreground mb-2">Ежемесячный платеж</p>
+              <p className="text-3xl font-bold text-primary">{loanResult.monthly} ₽</p>
+            </div>
+            <div className="p-6 bg-gradient-to-br from-accent/20 to-accent/10 rounded-lg border border-accent/30">
+              <p className="text-sm text-muted-foreground mb-2">Общая сумма</p>
+              <p className="text-3xl font-bold text-accent">{loanResult.total} ₽</p>
+            </div>
+            <div className="p-6 bg-gradient-to-br from-secondary/20 to-secondary/10 rounded-lg border border-secondary/30">
+              <p className="text-sm text-muted-foreground mb-2">Переплата</p>
+              <p className="text-3xl font-bold text-secondary">{loanResult.interest} ₽</p>
+            </div>
           </div>
-          <div className="p-6 bg-gradient-to-br from-accent/20 to-accent/10 rounded-lg border border-accent/30">
-            <p className="text-sm text-muted-foreground mb-2">Общая сумма</p>
-            <p className="text-3xl font-bold text-accent">{loanResult.total} ₽</p>
+        )}
+      </Card>
+
+      <Card className="p-6 bg-gradient-to-br from-card/90 to-card/50 backdrop-blur-sm border-primary/20 max-w-4xl mx-auto">
+        <div className="flex items-center gap-2 mb-6">
+          <Icon name="Banknote" size={28} className="text-green-400" />
+          <h2 className="text-3xl font-bold">Конвертер валют</h2>
+        </div>
+
+        <div className="grid md:grid-cols-3 gap-6 mb-6">
+          <div>
+            <Label htmlFor="currency-amount">Сумма</Label>
+            <Input
+              id="currency-amount"
+              type="number"
+              value={currencyCalc.amount}
+              onChange={(e) => setCurrencyCalc({ ...currencyCalc, amount: e.target.value })}
+              className="bg-black/20"
+              placeholder="1000"
+            />
           </div>
-          <div className="p-6 bg-gradient-to-br from-secondary/20 to-secondary/10 rounded-lg border border-secondary/30">
-            <p className="text-sm text-muted-foreground mb-2">Переплата</p>
-            <p className="text-3xl font-bold text-secondary">{loanResult.interest} ₽</p>
+          <div>
+            <Label htmlFor="currency-from">Из валюты</Label>
+            <Select value={currencyCalc.from} onValueChange={(val) => setCurrencyCalc({ ...currencyCalc, from: val })}>
+              <SelectTrigger className="bg-black/20">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="USD">USD ($)</SelectItem>
+                <SelectItem value="EUR">EUR (€)</SelectItem>
+                <SelectItem value="RUB">RUB (₽)</SelectItem>
+                <SelectItem value="GBP">GBP (£)</SelectItem>
+                <SelectItem value="CNY">CNY (¥)</SelectItem>
+                <SelectItem value="JPY">JPY (¥)</SelectItem>
+                <SelectItem value="KZT">KZT (₸)</SelectItem>
+                <SelectItem value="BYN">BYN (Br)</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div>
+            <Label htmlFor="currency-to">В валюту</Label>
+            <Select value={currencyCalc.to} onValueChange={(val) => setCurrencyCalc({ ...currencyCalc, to: val })}>
+              <SelectTrigger className="bg-black/20">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="USD">USD ($)</SelectItem>
+                <SelectItem value="EUR">EUR (€)</SelectItem>
+                <SelectItem value="RUB">RUB (₽)</SelectItem>
+                <SelectItem value="GBP">GBP (£)</SelectItem>
+                <SelectItem value="CNY">CNY (¥)</SelectItem>
+                <SelectItem value="JPY">JPY (¥)</SelectItem>
+                <SelectItem value="KZT">KZT (₸)</SelectItem>
+                <SelectItem value="BYN">BYN (Br)</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
         </div>
-      )}
-    </Card>
+
+        {currencyResult && (
+          <div className="p-8 bg-gradient-to-br from-green-500/20 to-emerald-500/10 rounded-lg border border-green-500/30 text-center">
+            <p className="text-sm text-muted-foreground mb-2">Результат конвертации</p>
+            <p className="text-5xl font-bold text-green-400">
+              {currencyResult} {currencyCalc.to}
+            </p>
+            <p className="text-sm text-muted-foreground mt-2">
+              Курс: 1 {currencyCalc.from} = {(currencyRates[currencyCalc.to] / currencyRates[currencyCalc.from]).toFixed(4)} {currencyCalc.to}
+            </p>
+          </div>
+        )}
+      </Card>
+    </div>
   );
 };
 
