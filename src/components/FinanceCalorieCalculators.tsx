@@ -204,6 +204,63 @@ export const CalorieCalculator = () => {
     activity: '1.2'
   });
 
+  const dishes = [
+    {
+      name: 'Стейк из говядины',
+      image: 'https://cdn.poehali.dev/projects/ac9010b1-e1ed-47d1-8cd9-0fa41a178636/files/37774781-15fa-4be4-8948-85f81536a974.jpg',
+      calories: 250,
+      protein: 26,
+      fats: 15,
+      carbs: 0,
+      portion: '100г'
+    },
+    {
+      name: 'Греческий салат',
+      image: 'https://cdn.poehali.dev/projects/ac9010b1-e1ed-47d1-8cd9-0fa41a178636/files/5a194e5e-71e0-437a-bdb7-c361e7631d0c.jpg',
+      calories: 180,
+      protein: 6,
+      fats: 14,
+      carbs: 8,
+      portion: '200г'
+    },
+    {
+      name: 'Паста Карбонара',
+      image: 'https://cdn.poehali.dev/projects/ac9010b1-e1ed-47d1-8cd9-0fa41a178636/files/47193976-39c0-4620-a4f7-6288dc420660.jpg',
+      calories: 420,
+      protein: 18,
+      fats: 22,
+      carbs: 38,
+      portion: '300г'
+    },
+    {
+      name: 'Лосось на гриле',
+      image: 'https://cdn.poehali.dev/projects/ac9010b1-e1ed-47d1-8cd9-0fa41a178636/files/80241422-ae37-4b11-b77f-57c4194f56bb.jpg',
+      calories: 206,
+      protein: 22,
+      fats: 13,
+      carbs: 0,
+      portion: '100г'
+    },
+    {
+      name: 'Салат Цезарь с курицей',
+      image: 'https://cdn.poehali.dev/projects/ac9010b1-e1ed-47d1-8cd9-0fa41a178636/files/9b44f98c-12a4-45b6-9046-2246dde6a7cd.jpg',
+      calories: 320,
+      protein: 28,
+      fats: 18,
+      carbs: 15,
+      portion: '250г'
+    },
+    {
+      name: 'Картофель фри',
+      image: 'https://cdn.poehali.dev/projects/ac9010b1-e1ed-47d1-8cd9-0fa41a178636/files/c4d79ef6-3922-4c11-8e8e-54b33e469a0a.jpg',
+      calories: 312,
+      protein: 4,
+      fats: 15,
+      carbs: 41,
+      portion: '100г'
+    }
+  ];
+
   const calculateCalories = () => {
     const w = parseFloat(calorieCalc.weight);
     const h = parseFloat(calorieCalc.height);
@@ -236,11 +293,12 @@ export const CalorieCalculator = () => {
   const calorieResult = calculateCalories();
 
   return (
-    <Card className="p-6 bg-gradient-to-br from-card/90 to-card/50 backdrop-blur-sm border-primary/20 max-w-4xl mx-auto">
-      <div className="flex items-center gap-2 mb-6">
-        <Icon name="Apple" size={28} className="text-green-400" />
-        <h2 className="text-3xl font-bold">Калькулятор калорий</h2>
-      </div>
+    <div className="space-y-6">
+      <Card className="p-6 bg-gradient-to-br from-card/90 to-card/50 backdrop-blur-sm border-primary/20 max-w-4xl mx-auto">
+        <div className="flex items-center gap-2 mb-6">
+          <Icon name="Apple" size={28} className="text-green-400" />
+          <h2 className="text-3xl font-bold">Калькулятор калорий</h2>
+        </div>
 
       <div className="grid md:grid-cols-2 gap-6 mb-6">
         <div className="space-y-4">
@@ -339,6 +397,46 @@ export const CalorieCalculator = () => {
           </div>
         </div>
       )}
-    </Card>
+      </Card>
+
+      <Card className="p-6 bg-gradient-to-br from-card/90 to-card/50 backdrop-blur-sm border-primary/20 max-w-7xl mx-auto">
+        <div className="flex items-center gap-2 mb-6">
+          <Icon name="UtensilsCrossed" size={28} className="text-orange-400" />
+          <h2 className="text-3xl font-bold">Популярные блюда</h2>
+        </div>
+
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {dishes.map((dish, index) => (
+            <div key={index} className="bg-gradient-to-br from-black/30 to-black/10 rounded-lg overflow-hidden border border-primary/20 hover:border-primary/40 transition-all hover:scale-105">
+              <div className="h-48 overflow-hidden">
+                <img src={dish.image} alt={dish.name} className="w-full h-full object-cover" />
+              </div>
+              <div className="p-4">
+                <h3 className="text-xl font-bold mb-2">{dish.name}</h3>
+                <p className="text-sm text-muted-foreground mb-3">Порция: {dish.portion}</p>
+                <div className="grid grid-cols-2 gap-2">
+                  <div className="p-2 bg-gradient-to-br from-orange-500/20 to-orange-500/10 rounded border border-orange-500/30">
+                    <p className="text-xs text-muted-foreground">Калории</p>
+                    <p className="text-lg font-bold text-orange-400">{dish.calories}</p>
+                  </div>
+                  <div className="p-2 bg-gradient-to-br from-red-500/20 to-red-500/10 rounded border border-red-500/30">
+                    <p className="text-xs text-muted-foreground">Белки</p>
+                    <p className="text-lg font-bold text-red-400">{dish.protein}г</p>
+                  </div>
+                  <div className="p-2 bg-gradient-to-br from-yellow-500/20 to-yellow-500/10 rounded border border-yellow-500/30">
+                    <p className="text-xs text-muted-foreground">Жиры</p>
+                    <p className="text-lg font-bold text-yellow-400">{dish.fats}г</p>
+                  </div>
+                  <div className="p-2 bg-gradient-to-br from-blue-500/20 to-blue-500/10 rounded border border-blue-500/30">
+                    <p className="text-xs text-muted-foreground">Углеводы</p>
+                    <p className="text-lg font-bold text-blue-400">{dish.carbs}г</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </Card>
+    </div>
   );
 };
